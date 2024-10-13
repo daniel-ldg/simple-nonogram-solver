@@ -1,0 +1,33 @@
+{
+  "name": "simple-nonogram-solver",
+  "version": "1.0.0",
+  "description": "A simple and lightweight Nonogram solver.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daniel-ldg/simple-nonogram-solver.git"
+  },
+  "keywords": [
+    "nonogram",
+    "picross",
+    "crosspix",
+    "griddlers",
+    "hanjie",
+    "solver"
+  ],
+  "author": "daniel-ldg",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/daniel-ldg/simple-nonogram-solver/issues"
+  },
+  "homepage": "https://github.com/daniel-ldg/simple-nonogram-solver#readme",
+  "devDependencies": {
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.3"
+  }
+}
