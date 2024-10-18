@@ -1,5 +1,15 @@
 import { NonogramSolver } from "./types";
 
+/**
+ * Solves a Nonogram puzzle based on the provided row and column hints.
+ *
+ * @param rowHints - An array of arrays representing the hints for each row.
+ * @param columnHints - An array of arrays representing the hints for each column.
+ * @returns An object indicating the success of the operation and the solved grid
+ *          if successful. The grid is represented as a 2D array, where filled
+ *          cells are true and empty cells are false. If the puzzle cannot be solved,
+ *          it returns { success: false }.
+ */
 export const solveNonogram: NonogramSolver = ({ rowHints, columnHints }) => {
 	const gridWidth = columnHints.length;
 	const gridHeight = rowHints.length;
@@ -56,7 +66,19 @@ export const solveNonogram: NonogramSolver = ({ rowHints, columnHints }) => {
 	};
 };
 
-function resolveSequence(hintValues: number[], currentSequence: number[]): number[] | null {
+/**
+ * Resolves a sequence of hints by generating valid patterns and comparing them
+ * against the current sequence to find consistent configurations.
+ *
+ * @param hintValues - An array of numbers representing the lengths of the filled
+ *                    segments (hints).
+ * @param currentSequence - An array representing the current state of the sequence,
+ *                         where 0 indicates empty cells and other values indicate
+ *                         filled cells.
+ * @returns An array representing the resolved sequence, or null if no valid
+ *          configurations are found.
+ */
+const resolveSequence = (hintValues: number[], currentSequence: number[]): number[] | null => {
 	const validPatterns: number[][] = [];
 
 	for (const pattern of generatePermutations(hintValues, currentSequence)) {
@@ -83,9 +105,25 @@ function resolveSequence(hintValues: number[], currentSequence: number[]): numbe
 	}
 
 	return resolvedSequence;
-}
+};
 
-function* generatePermutations(hintValues: number[], remaining: number[], offset: number = 0): Generator<number[]> {
+/**
+ * Generates all possible permutations of hints for a Nonogram puzzle.
+ *
+ * @param hintValues - An array of numbers representing the lengths of the filled
+ *                    segments (hints) in the Nonogram.
+ * @param remaining - An array representing the remaining available spaces for
+ *                    placing the hints.
+ * @param offset - An optional parameter indicating the starting position for
+ *                 the permutation, defaulting to 0.
+ * @returns A generator yielding arrays of numbers representing valid
+ *          configurations of filled (1) and empty (2) cells based on the provided hints.
+ */
+const generatePermutations = function* (
+	hintValues: number[],
+	remaining: number[],
+	offset: number = 0
+): Generator<number[]> {
 	if (hintValues && hintValues.length && hintValues[0]) {
 		const [currentHint, ...remainingHints] = hintValues;
 		const sumOfRemainingHints = remainingHints.reduce((acc, curr) => acc + curr, 0);
