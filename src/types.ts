@@ -1,5 +1,10 @@
 export type NonogramSolver = (input: NonogramSolverInput) => NonogramSolverOutput;
 
+export type NonogramSolverAsync = (
+	input: NonogramSolverInput,
+	msTimeout?: number
+) => Promise<Omit<SolutionFound, "success">>;
+
 export type NonogramSolverInput = {
 	rowHints: Hints;
 	columnHints: Hints;

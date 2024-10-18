@@ -1,4 +1,4 @@
-import { NonogramSolver } from "./types";
+import { NonogramSolver, NonogramSolverAsync, SolutionFound } from "./types";
 
 /**
  * Solves a Nonogram puzzle based on the provided row and column hints.
@@ -149,4 +149,34 @@ const generatePermutations = function* (
 	} else {
 		yield [];
 	}
-}
+};
+
+/**
+ * Asynchronously solves a Nonogram puzzle with an optional timeout feature.
+ *
+ * @param input - An object containing the row and column hints for the Nonogram.
+ * @param timeout - An optional timeout duration in milliseconds. If specified,
+ *                  the promise will reject if the solving operation takes longer
+ *                  than this duration.
+ * @returns A Promise that resolves to the solution of the Nonogram if successful,
+ *          or rejects with an error message if no solution exists or if the
+ *          operation times out.
+ */
+export const asyncSolveNonogram: NonogramSolverAsync = (input, timeout = 0) => {
+	const solutionPromise = new Promise<SolutionFound>((resolve, reject) => {
+		const { success, ...solution } = solveNonogram(input);
+		if (success) {
+			resolve(solution as SolutionFound);
+		} else {
+			reject("no solution");
+		}
+	});
+	if (timeout === 0) {
+		return solutionPromise;
+	} else {
+		const timeoutPromise = new Promise<SolutionFound>((_, reject) =>
+			setTimeout(() => reject(new Error("Operation timed out")), timeout)
+		);
+		return Promise.race([solutionPromise, timeoutPromise]);
+	}
+};

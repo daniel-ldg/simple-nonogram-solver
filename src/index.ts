@@ -1,3 +1,3 @@
 export * from "./types";
 
-export { solveNonogram } from "./NonogramSolver";
+export { solveNonogram, asyncSolveNonogram } from "./NonogramSolver";

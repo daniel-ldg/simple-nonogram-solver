@@ -2,7 +2,7 @@
 
 A simple and lightweight Nonogram solver, written in TypeScript. This package provides an efficient solver for Nonogram puzzles based on row and column hints.
 
-### Installation
+## Installation
 
 You can install the package via npm:
 
@@ -10,36 +10,74 @@ You can install the package via npm:
 npm i simple-nonogram-solver
 ```
 
-### Usage
+## Usage
 
-The package exports a single function, solveNonogram, which takes the row and column hints of the Nonogram puzzle and returns either a solution or an indication that no solution could be found.
+The package exports a single function, `solveNonogram`, which takes the row and column hints of the Nonogram puzzle and returns either a solution or an indication that no solution could be found. Additionally, you can use `asyncSolveNonogram` for asynchronous solving.
+
+### Synchronous Example
 
 ```Typescript
-import { solveNonogram } from 'simple-nonogram-solver';
+import { solveNonogram } from "simple-nonogram-solver";
 
 const rowHints = [
-  [3],
-  [1, 1],
-  [3]
+  [1, 1],  // 2 filled cells in Row 1 (separated by at least one space)
+  [3],     // 3 filled cells in Row 2
+  [1],     // 1 filled cell in Row 3
 ];
 
 const columnHints = [
-  [1],
-  [2],
-  [1]
+  [2],  // 2 filled cell in Column 1
+  [1],  // 1 filled cell in Column 2
+  [3],  // 3 filled cell in Column 3
 ];
 
 const result = solveNonogram({ rowHints, columnHints });
 
 if (result.success) {
-  console.log('Solution found:');
-  console.table(result.grid);
+  console.log("Solution found:");
+  result.grid.forEach(row => console.log(row.map(isFilled => (isFilled ? "■" : "□")).join(" ")));
 } else {
-  console.log('No solution found.');
+  console.log("No solution found.");
 }
 ```
 
-### API
+### Asynchronous Example
+
+```Typescript
+import { asyncSolveNonogram } from "simple-nonogram-solver";
+
+const rowHints = [
+  [1, 1],  // 2 filled cells in Row 1 (separated by at least one space)
+  [3],     // 3 filled cells in Row 2
+  [1],     // 1 filled cell in Row 3
+];
+
+const columnHints = [
+  [2],  // 2 filled cell in Column 1
+  [1],  // 1 filled cell in Column 2
+  [3],  // 3 filled cell in Column 3
+];
+
+asyncSolveNonogram({ rowHints, columnHints }, 1000)
+  .then((result) => {
+      console.log("Solution found:");
+      result.grid.forEach(row => console.log(row.map(isFilled => (isFilled ? "■" : "□")).join(" ")));
+  })
+  .catch((error) => {
+    console.error("Error solving Nonogram:", error);
+  });
+```
+
+### Expected Output
+
+```
+Solution found:
+■ □ ■
+■ ■ ■
+□ □ ■
+```
+
+## API
 
 `solveNonogram(input: NonogramSolverInput): NonogramSolverOutput`
 
@@ -59,33 +97,38 @@ The function returns one of the following:
 2. `NoSolutionFound`:
     - `success`: `false` – indicates the puzzle could not be solved.
 
-### Types
+## Types
 
 ```Typescript
 export type NonogramSolver = (input: NonogramSolverInput) => NonogramSolverOutput;
 
+export type NonogramSolverAsync = (
+	input: NonogramSolverInput,
+	msTimeout?: number
+) => Promise<Omit<SolutionFound, "success">>;
+
 export type NonogramSolverInput = {
-    rowHints: Hints;
-    columnHints: Hints;
+	rowHints: Hints;
+	columnHints: Hints;
 };
 
 export type NonogramSolverOutput = SolutionFound | NoSolutionFound;
 
 export type SolutionFound = {
-    success: true;
-    grid: SolvedGrid;
-    height: number;
-    width: number;
+	success: true;
+	grid: SolvedGrid;
+	height: number;
+	width: number;
 };
 
 export type NoSolutionFound = {
-    success: false;
+	success: false;
 };
 
 export type SolvedGrid = boolean[][];
 export type Hints = number[][];
 ```
 
-### Attribution
+## Attribution
 
 The algorithm used in this solver is heavily based on a Reddit [comment](https://www.reddit.com/r/dailyprogrammer/comments/am1x6o/comment/efk7vl7/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button) by Gprime5.

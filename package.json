@@ -1,6 +1,6 @@
 {
   "name": "simple-nonogram-solver",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple and lightweight Nonogram solver.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
