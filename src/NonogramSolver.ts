@@ -104,8 +104,8 @@ const resolveSequence = (hintValues: number[], currentSequence: number[], signal
 		if (isValid) validPatterns.push(completedPattern);
 	}
 
-	// Handle impossible cases
-	if (validPatterns.length === 0) {
+	// Handle abortion and impossible cases
+	if (signal?.aborted || validPatterns.length === 0) {
 		return null;
 	}
 
