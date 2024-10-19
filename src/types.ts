@@ -1,4 +1,4 @@
-export type NonogramSolver = (input: NonogramSolverInput) => NonogramSolverOutput;
+export type NonogramSolver = (input: NonogramSolverInput, signal?: AbortSignal) => NonogramSolverOutput;
 
 export type NonogramSolverAsync = (
 	input: NonogramSolverInput,

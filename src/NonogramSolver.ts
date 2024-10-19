@@ -1,24 +1,33 @@
 import { NonogramSolver, NonogramSolverAsync, SolutionFound } from "./types";
 
 /**
- * Solves a Nonogram puzzle based on the provided row and column hints.
+ * Solves a Nonogram puzzle based on row and column hints, with optional support
+ * for an abort signal to cancel the solving operation.
  *
  * @param rowHints - An array of arrays representing the hints for each row.
  * @param columnHints - An array of arrays representing the hints for each column.
- * @returns An object indicating the success of the operation and the solved grid
- *          if successful. The grid is represented as a 2D array, where filled
- *          cells are true and empty cells are false. If the puzzle cannot be solved,
- *          it returns { success: false }.
+ * @param signal - An optional AbortSignal that allows the operation to be cancelled.
+ *                 If the signal is triggered, the function will return a failure
+ *                 with reason "Operation aborted".
+ * @returns An object indicating the success of the operation, the solved grid if
+ *          successful, or a failure object if the puzzle cannot be solved or if
+ *          the operation is aborted.
  */
-export const solveNonogram: NonogramSolver = ({ rowHints, columnHints }) => {
+export const solveNonogram: NonogramSolver = ({ rowHints, columnHints }, signal?: AbortSignal) => {
 	const gridWidth = columnHints.length;
 	const gridHeight = rowHints.length;
 
 	const grid: number[][] = new Array(gridHeight).fill(null).map(_ => new Array(gridWidth).fill(0));
 
 	let hasChanged = true;
+
 	while (hasChanged) {
 		hasChanged = false;
+
+		// Check for abort signal
+		if (signal?.aborted) {
+			return { success: false, reason: "Operation aborted" };
+		}
 
 		// Solve rows
 		for (let y = 0; y < rowHints.length; y++) {
@@ -163,8 +172,10 @@ const generatePermutations = function* (
  *          operation times out.
  */
 export const asyncSolveNonogram: NonogramSolverAsync = (input, timeout = 0) => {
+	const controller = new AbortController();
+	const { signal } = controller;
 	const solutionPromise = new Promise<SolutionFound>((resolve, reject) => {
-		const { success, ...solution } = solveNonogram(input);
+		const { success, ...solution } = solveNonogram(input, signal);
 		if (success) {
 			resolve(solution as SolutionFound);
 		} else {
@@ -175,7 +186,10 @@ export const asyncSolveNonogram: NonogramSolverAsync = (input, timeout = 0) => {
 		return solutionPromise;
 	} else {
 		const timeoutPromise = new Promise<SolutionFound>((_, reject) =>
-			setTimeout(() => reject(new Error("Operation timed out")), timeout)
+			setTimeout(() => {
+				reject(new Error("Operation timed out"));
+				controller.abort();
+			}, timeout)
 		);
 		return Promise.race([solutionPromise, timeoutPromise]);
 	}

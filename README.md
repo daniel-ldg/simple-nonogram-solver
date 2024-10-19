@@ -31,7 +31,13 @@ const columnHints = [
   [3],  // 3 filled cell in Column 3
 ];
 
-const result = solveNonogram({ rowHints, columnHints });
+// optional mechanism to abort the process if it runs for too long
+const controller = new AbortController();
+const { signal } = controller;
+const timeout = 5000;
+setTimeout(() => controller.abort(), timeout)
+
+const result = solveNonogram({ rowHints, columnHints }, signal);
 
 if (result.success) {
   console.log("Solution found:");
@@ -58,7 +64,8 @@ const columnHints = [
   [3],  // 3 filled cell in Column 3
 ];
 
-asyncSolveNonogram({ rowHints, columnHints }, 1000)
+const timeout = 5000;
+asyncSolveNonogram({ rowHints, columnHints }, timeout)
   .then((result) => {
       console.log("Solution found:");
       result.grid.forEach(row => console.log(row.map(isFilled => (isFilled ? "■" : "□")).join(" ")));
@@ -128,6 +135,22 @@ export type NoSolutionFound = {
 export type SolvedGrid = boolean[][];
 export type Hints = number[][];
 ```
+
+## Performance Considerations
+
+### Long Running Times and Memory Usage
+
+The `solveNonogram` function is designed to iteratively solve Nonogram puzzles by processing row and column hints and updating the grid. However, depending on the complexity of the puzzle (size of the grid, difficulty of hints), this function can:
+
+-   **Run for extended periods of time:** In certain edge cases, such as ambiguous or very large puzzles, the solving process may take a long time, potentially leading to performance bottlenecks.
+-   **Consume a significant amount of memory:** Since the grid and its intermediate states are stored in memory, larger puzzles may result in high memory usage during the solving process.
+
+### Mitigating Risks
+
+To prevent indefinite execution or excessive resource usage, you may:
+
+-   Use the `AbortController` API to stop the function if needed.
+-   Consider setting limits on the maximum grid size and complexity.
 
 ## Attribution
 
