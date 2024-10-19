@@ -84,13 +84,14 @@ export const solveNonogram: NonogramSolver = ({ rowHints, columnHints }, signal?
  * @param currentSequence - An array representing the current state of the sequence,
  *                         where 0 indicates empty cells and other values indicate
  *                         filled cells.
+ * @param signal - An optional AbortSignal that allows the operation to be cancelled.
  * @returns An array representing the resolved sequence, or null if no valid
  *          configurations are found.
  */
-const resolveSequence = (hintValues: number[], currentSequence: number[]): number[] | null => {
+const resolveSequence = (hintValues: number[], currentSequence: number[], signal?: AbortSignal): number[] | null => {
 	const validPatterns: number[][] = [];
 
-	for (const pattern of generatePermutations(hintValues, currentSequence)) {
+	for (const pattern of generatePermutations(hintValues, currentSequence, 0, signal)) {
 		const completedPattern = pattern.concat(new Array(currentSequence.length - pattern.length).fill(1));
 		let isValid = true;
 
@@ -125,14 +126,20 @@ const resolveSequence = (hintValues: number[], currentSequence: number[]): numbe
  *                    placing the hints.
  * @param offset - An optional parameter indicating the starting position for
  *                 the permutation, defaulting to 0.
+ * @param signal - An optional AbortSignal that allows the operation to be cancelled.
  * @returns A generator yielding arrays of numbers representing valid
  *          configurations of filled (1) and empty (2) cells based on the provided hints.
  */
 const generatePermutations = function* (
 	hintValues: number[],
 	remaining: number[],
-	offset: number = 0
+	offset: number = 0,
+	signal?: AbortSignal
 ): Generator<number[]> {
+	// Check for abort signal
+	if (signal?.aborted) {
+		return; // stop generator execution
+	}
 	if (hintValues && hintValues.length && hintValues[0]) {
 		const [currentHint, ...remainingHints] = hintValues;
 		const sumOfRemainingHints = remainingHints.reduce((acc, curr) => acc + curr, 0);
@@ -146,7 +153,8 @@ const generatePermutations = function* (
 				for (const subsequentPermutation of generatePermutations(
 					remainingHints,
 					remaining.slice(position + currentHint + 1),
-					1
+					1,
+					signal
 				)) {
 					yield new Array(position + offset)
 						.fill(1)
