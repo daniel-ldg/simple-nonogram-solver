@@ -1,3 +1,3 @@
-export * from "./types";
+export type { NonogramHints, NonogramSolverOptions } from "./types";
 
-export { solveNonogram, asyncSolveNonogram } from "./NonogramSolver";
+export { solveNonogram, NonogramSolverError } from "./NonogramSolver";

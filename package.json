@@ -1,33 +1,51 @@
 {
-  "name": "simple-nonogram-solver",
-  "version": "1.0.5",
-  "description": "A simple and lightweight Nonogram solver.",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "scripts": {
-    "build": "tsup"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/daniel-ldg/simple-nonogram-solver.git"
-  },
-  "keywords": [
-    "nonogram",
-    "picross",
-    "crosspix",
-    "griddlers",
-    "hanjie",
-    "solver"
-  ],
-  "author": "daniel-ldg",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/daniel-ldg/simple-nonogram-solver/issues"
-  },
-  "homepage": "https://github.com/daniel-ldg/simple-nonogram-solver#readme",
-  "devDependencies": {
-    "tsup": "^8.3.0",
-    "typescript": "^5.6.3"
-  }
+	"name": "simple-nonogram-solver",
+	"version": "2.0.0",
+	"description": "A simple and lightweight Nonogram solver.",
+	"exports": {
+		"node": {
+			"import": {
+				"types": "./dist/node/index.d.ts",
+				"default": "./dist/node/index.mjs"
+			},
+			"require": {
+				"types": "./dist/node/index.d.ts",
+				"default": "./dist/node/index.js"
+			}
+		},
+		"browser": {
+			"types": "./dist/browser/index.d.mts",
+			"default": "./dist/browser/index.mjs"
+		},
+		"default": "./dist/node/index.js"
+	},
+	"main": "./dist/node/index.js",
+	"module": "./dist/node/index.mjs",
+	"types": "./dist/node/index.d.ts",
+	"scripts": {
+		"build": "tsup"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/daniel-ldg/simple-nonogram-solver.git"
+	},
+	"keywords": [
+		"nonogram",
+		"picross",
+		"crosspix",
+		"griddlers",
+		"hanjie",
+		"solver"
+	],
+	"author": "daniel-ldg",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/daniel-ldg/simple-nonogram-solver/issues"
+	},
+	"homepage": "https://github.com/daniel-ldg/simple-nonogram-solver#readme",
+	"devDependencies": {
+		"@types/node": "^22.7.8",
+		"tsup": "^8.3.0",
+		"typescript": "^5.6.3"
+	}
 }

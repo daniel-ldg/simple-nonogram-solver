@@ -1,27 +1,13 @@
-export type NonogramSolver = (input: NonogramSolverInput, signal?: AbortSignal) => NonogramSolverOutput;
+export type Cell = 0 | 1 | 2; // 0: unknown, 1: empty, 2: filled
+export type Grid = Cell[][];
 
-export type NonogramSolverAsync = (
-	input: NonogramSolverInput,
-	msTimeout?: number
-) => Promise<Omit<SolutionFound, "success">>;
+export type NonogramSolver = (hints: NonogramHints, options?: NonogramSolverOptions) => Promise<boolean[][]>;
 
-export type NonogramSolverInput = {
-	rowHints: Hints;
-	columnHints: Hints;
+export type NonogramHints = {
+	rowsHints: number[][];
+	columnsHints: number[][];
 };
 
-export type NonogramSolverOutput = SolutionFound | NoSolutionFound;
-
-export type SolutionFound = {
-	success: true;
-	grid: SolvedGrid;
-	height: number;
-	width: number;
+export type NonogramSolverOptions = {
+	maxIterations?: number;
 };
-
-export type NoSolutionFound = {
-	success: false;
-};
-
-export type SolvedGrid = boolean[][];
-export type Hints = number[][];
